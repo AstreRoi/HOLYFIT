@@ -9,26 +9,50 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ currentView, setView }) => {
   const navItems = [
     { id: ViewState.HOME, label: '홈', icon: 'fa-house' },
-    { id: ViewState.DIET, label: '식단 가이드', icon: 'fa-utensils' },
-    { id: ViewState.WORKOUT, label: '운동 프로그램', icon: 'fa-dumbbell' },
-    { id: ViewState.SUBSCRIPTION, label: '구독 관리', icon: 'fa-crown' },
+    { id: ViewState.DIET, label: '식단', icon: 'fa-utensils' },
+    { id: ViewState.WORKOUT, label: '운동', icon: 'fa-dumbbell' },
+    { id: ViewState.SUBSCRIPTION, label: '구독', icon: 'fa-crown' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:relative md:border-none md:shadow-none md:bg-transparent z-50">
-      <div className="flex justify-around items-center h-16 md:flex-col md:h-auto md:items-start md:space-y-4 md:mt-8">
+    <nav className="md:block">
+      {/* Desktop Vertical Nav */}
+      <div className="hidden md:flex flex-col space-y-3">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setView(item.id)}
-            className={`flex flex-col md:flex-row items-center p-2 rounded-lg transition-colors w-full md:px-4 md:py-3 ${
+            className={`flex items-center p-4 rounded-2xl transition-all duration-200 group relative overflow-hidden ${
               currentView === item.id
-                ? 'text-primary-600 bg-primary-50'
-                : 'text-gray-500 hover:text-primary-500 hover:bg-gray-50'
+                ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30 translate-x-2'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-primary-600'
             }`}
           >
-            <i className={`fa-solid ${item.icon} text-xl mb-1 md:mb-0 md:mr-3`}></i>
-            <span className="text-xs md:text-sm font-medium">{item.label}</span>
+            <div className={`w-8 flex justify-center text-xl transition-transform ${currentView === item.id ? 'scale-110' : 'group-hover:scale-110'}`}>
+               <i className={`fa-solid ${item.icon}`}></i>
+            </div>
+            <span className="font-bold ml-3">{item.label}</span>
+            {currentView === item.id && (
+               <div className="absolute right-4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Mobile Floating Dock */}
+      <div className="md:hidden bg-white/90 backdrop-blur-xl border border-white/20 p-2 rounded-3xl shadow-3d flex justify-around items-center">
+         {navItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setView(item.id)}
+            className={`flex flex-col items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 ${
+              currentView === item.id
+                ? 'bg-primary-500 text-white shadow-lg -translate-y-4 scale-110'
+                : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            <i className={`fa-solid ${item.icon} text-lg mb-1`}></i>
+            {currentView !== item.id && <span className="text-[10px] font-medium">{item.label}</span>}
           </button>
         ))}
       </div>
