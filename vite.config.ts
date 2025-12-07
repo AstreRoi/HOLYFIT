@@ -3,14 +3,17 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // 현재 모드(development/production)에 맞는 .env 파일을 로드합니다.
-  const env = loadEnv(mode, (process as any).cwd(), '');
+  // Load env file based on `mode` in the current working directory.
+  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
+  const env = loadEnv(mode, '.', '');
   return {
     plugins: [react()],
-    // GitHub Pages 등 서브 디렉토리 배포를 위해 상대 경로('./')를 사용하도록 설정
-    base: './',
+    // 'base' is typically '/' for Vercel/Netlify (root domain). 
+    // Only use './' if deploying to a sub-folder (like GitHub Pages).
+    // For Vercel ease of use, we will default to '/' but keep logic flexible if needed.
+    base: '/', 
     define: {
-      // 코드 내의 process.env.API_KEY를 실제 값으로 치환합니다.
+      // Expose VITE_API_KEY as process.env.API_KEY for compatibility with existing code
       'process.env.API_KEY': JSON.stringify(env.VITE_API_KEY),
     },
   };
