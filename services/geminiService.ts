@@ -1,8 +1,7 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { DietPlan, WorkoutRoutine } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // Schema for Diet Generation
 const dietSchema: Schema = {
