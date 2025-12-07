@@ -7,6 +7,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, (process as any).cwd(), '');
   return {
     plugins: [react()],
+    // GitHub Pages 등 서브 디렉토리 배포를 위해 상대 경로('./')를 사용하도록 설정
+    base: './',
     define: {
       // 코드 내의 process.env.API_KEY를 실제 값으로 치환합니다.
       'process.env.API_KEY': JSON.stringify(env.VITE_API_KEY),

@@ -1,7 +1,10 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { DietPlan, WorkoutRoutine } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// API 키가 환경변수에 없을 경우를 대비해 빈 문자열로 초기화 (앱 크래시 방지)
+// 주의: GitHub Actions나 배포 설정에서 VITE_API_KEY 환경 변수를 반드시 설정해야 AI 기능이 작동합니다.
+const apiKey = process.env.API_KEY || "";
+const ai = new GoogleGenAI({ apiKey });
 
 // Schema for Diet Generation
 const dietSchema: Schema = {
@@ -56,6 +59,10 @@ const workoutSchema: Schema = {
 };
 
 export const generateDietPlan = async (goal: string): Promise<DietPlan | null> => {
+  if (!apiKey) {
+    console.warn("Gemini API Key is missing. Please check your environment variables.");
+    return null;
+  }
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -76,6 +83,10 @@ export const generateDietPlan = async (goal: string): Promise<DietPlan | null> =
 };
 
 export const generateWorkoutRoutine = async (level: string): Promise<WorkoutRoutine | null> => {
+  if (!apiKey) {
+    console.warn("Gemini API Key is missing. Please check your environment variables.");
+    return null;
+  }
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
