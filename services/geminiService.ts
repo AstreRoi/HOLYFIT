@@ -2,8 +2,16 @@ import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { DietPlan, WorkoutRoutine } from "../types";
 
 // API 키가 환경변수에 없을 경우를 대비해 빈 문자열로 초기화 (앱 크래시 방지)
-// 주의: GitHub Actions나 배포 설정에서 VITE_API_KEY 환경 변수를 반드시 설정해야 AI 기능이 작동합니다.
-const apiKey = process.env.API_KEY || "";
+// 브라우저 런타임에서 process가 정의되지 않았을 경우를 대비한 안전장치 추가
+let apiKey = "";
+try {
+  // Vite의 define 플러그인에 의해 문자열로 치환되거나, Node 환경에서 값을 가져옴
+  apiKey = process.env.API_KEY || "";
+} catch (e) {
+  // process가 정의되지 않은 환경(순수 브라우저 등)에서의 예외 무시
+  console.warn("API Key setup warning: process is not defined");
+}
+
 const ai = new GoogleGenAI({ apiKey });
 
 // Schema for Diet Generation
