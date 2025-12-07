@@ -64,8 +64,8 @@ const MOCK_WORKOUT_ROUTINES: Record<string, WorkoutRoutine> = {
 };
 
 // --- API Initialization ---
-const apiKey = process.env.API_KEY || (import.meta as any).env?.VITE_API_KEY;
-const ai = apiKey ? new GoogleGenAI({ apiKey: apiKey }) : null;
+// The API key must be obtained exclusively from process.env.API_KEY
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // --- Helper to parse clean JSON ---
 const parseJson = (text: string) => {
@@ -82,11 +82,6 @@ const parseJson = (text: string) => {
 };
 
 export const generateDietPlan = async (goal: string, consumedCalories: number = 0): Promise<DietPlan> => {
-  if (!ai) {
-    console.warn("No API Key found. Returning mock data.");
-    return MOCK_DIET_PLANS['Default'];
-  }
-
   try {
     const prompt = `
       You are a professional nutritionist. Create a daily diet plan for a user with the goal: "${goal}".
@@ -132,11 +127,6 @@ export const generateDietPlan = async (goal: string, consumedCalories: number = 
 };
 
 export const generateWorkoutRoutine = async (level: string): Promise<WorkoutRoutine> => {
-  if (!ai) {
-    console.warn("No API Key found. Returning mock data.");
-    return MOCK_WORKOUT_ROUTINES['Default'];
-  }
-
   try {
     const prompt = `
       You are a fitness coach. Create a workout routine for a user with difficulty level: "${level}".
